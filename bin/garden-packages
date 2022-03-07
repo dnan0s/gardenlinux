@@ -1,0 +1,48 @@
+#!/usr/bin/env bash
+
+# Contains sources from https://github.com/debuerreotype/debuerreotype
+
+set -Eeuo pipefail
+
+thisDir="$(dirname "$(readlink -f "${BASH_SOURCE}")")"
+
+source "${thisDir}/.constants.sh" \
+	--flags 'release:' \
+	--help "TODO"
+
+eval "${dgetopt}"
+while true; do
+    flag="$1"; shift
+    dgetopt-case "${flag}"
+    case "${flag}" in
+        --release)
+	    REPO_VERSION="${1}"; shift ;;
+	--) break;;
+        *)
+	    eusage "unknown flag '${flag}'";;
+    esac
+done
+
+mkdir -p "${thisDir}/tmp"
+
+trap "rm -rf ${thisDir}/tmp" EXIT
+
+
+pushd "${thisDir}/tmp"
+
+curl --fail --silent -o Packages.orig "http://repo.gardenlinux.io/gardenlinux/dists/${REPO_VERSION}/main/binary-all/Packages" || \
+	(echo "### Could not fetch Package file from repo.gardenlinux.io" && exit 1)
+
+grep -q "<Error><Code>NoSuchKey</Code>" Packages.orig && \
+	(echo "### Gardenlinux version ${REPO_VERSION} does not exist on repo.gardenlinux.io" && exit 1)
+
+echo "### Generating Packages List for $REPO_VERSION"
+
+
+
+
+popd
+
+
+
+
