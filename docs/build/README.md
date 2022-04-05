@@ -1,9 +1,10 @@
 ## How does Building Garden Linux work?
-
+<sep>
 By running the build.sh command, you start the Build Process.
 
 This Script generates a Docker Container, which is used as a controlled environment to build Garden Linux with all needed packages and sources. For more information look into the /docker folder
 
+<sep>
 
 ---
 
